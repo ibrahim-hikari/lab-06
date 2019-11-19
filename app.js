@@ -31,20 +31,22 @@ server.get('/location', (request, response) => {
 function Location(data) {
     this.search_query = 'lynnwood';
     this.formatted_query = data.results[0].formatted_address;
-    this.lat = data.results[0].geometry.location.lat
-    this.lng = data.results[0].geometry.location.lng
+    this.latitude = data.results[0].geometry.location.lat
+    this.longtiude = data.results[0].geometry.location.lng
 }
 
 server.get('/weather', (request, response) => {
     const weatherData = require('./data/darksky.json');
-    const weather = new Weather(weatherData);
+    const weather = weatherData.daily.data.map((day) => {
+        return new Weather(day)
+    })
     response.status(200).json(weather);
 })
 
+
 function Weather(data) {
-    this.search_query = 'lynnwood';
-    this.forcast = data.daily.summary;
-    this.time = new Date(data.daily.data[0].time*1022.1).toDateString();
+    this.forcast = data.summary
+    this.time = new Date(data.time*1000).toDateString();
 }
 
 server.get('/foo',(request,response) =>{
